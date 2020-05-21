@@ -1,0 +1,7 @@
+Arrivals
+BB123::ElAir::New York::Israel::2020-04-20::14:02::3
+BB987::EL-AL::Germany::Israel::2020-04-25::19:02::3
+Departures
+BB365::El-al::Israel::New York::2020-05-20::20:30::3
+BB231::JesterAirLines::Israel::Alaska::2020-03-20::20:30::3
+BB786::Transvania::Israel::Jordan::2020-04-17::20:20::3
