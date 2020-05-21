@@ -1,5 +1,7 @@
 package AirPort;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -186,13 +188,13 @@ public class Main {
 
 		}
 		if (ArrivOrDepart == 1)
-			return airport.searchArrivalsByDate(airport.getArrival().getFlights(), lowDate, highDate);
+			return airport.searchArrivalsByDate(airport.getArrival(), lowDate, highDate);
 		else
-			return airport.searchArrivalsByDate(airport.getDeparture().getFlights(), lowDate, highDate);
+			return airport.searchArrivalsByDate(airport.getDeparture(), lowDate, highDate);
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Scanner scan = new Scanner(System.in);
 		Airport airport = new Airport("Ben Gurion");
 		LocalDate date1 = LocalDate.of(2020, 5, 20);
@@ -223,6 +225,8 @@ public class Main {
 		menu.append("4--- Show all Flights\n");
 		menu.append("5--- Search Arrivals within dates\n");
 		menu.append("6--- Search Departures within dates\n");
+		menu.append("7--- Load from file\n");
+		menu.append("8--- Save to file\n");
 
 		System.out.println("Welcome to Ben Gurion Airport!");
 		int select = 0;
@@ -252,6 +256,12 @@ public class Main {
 				results = searchByDate(airport, 0);
 				for (Flight flight : results)
 					System.out.println(flight.toString());
+				break;
+			case 7:
+				airport.load();
+				break;
+			case 8:
+				airport.save();
 				break;
 
 			default:

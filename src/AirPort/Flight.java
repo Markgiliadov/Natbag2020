@@ -87,11 +87,17 @@ public class Flight {
 		return flightId == temp.getFlightId() && airline.equals(temp.getAirline());
 	}
 
+	public String save() {
+		String dataLine = this.flightId + "::" + this.getAirline() + "::" + this.goingTo + "::" + this.comeingFrom + "::"
+				+ getDate().toString() + "::" + this.getTime().toString() + "::" + this.terminal+"\n";
+		return dataLine;
+	}
+
 	@Override
 	public String toString() {
 		return "Flight: " + flightId + ", Airline:" + this.airline + ", Departure : " + goingTo + ", Arrival: "
-				+ comeingFrom + " , Departure Time: " + date.getDayOfMonth() + "/" + date.getMonthValue() + "/"
-				+ date.getYear() + " at " + ", Arrival Time: " + " at " + time + "\n";
+				+ comeingFrom + " , Date: " + date.getDayOfMonth() + "/" + date.getMonthValue() + "/" + date.getYear()
+				+ ", Time: " + time + "\n";
 	}
 
 }
