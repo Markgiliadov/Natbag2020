@@ -5,3 +5,4 @@ Departures
 LY365::El-al::Israel::New York::2020-05-20::20:30::3
 IL231::JesterAirLines::Israel::Alaska::2020-03-20::20:30::3
 NY786::Transvania::Israel::Jordan::2020-04-17::20:20::3
+LY900::pegasus::Israel::Moscow::2020-10-15::14:20::3

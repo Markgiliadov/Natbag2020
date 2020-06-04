@@ -117,7 +117,7 @@ public class Main {
 		String date = "";
 		boolean validFormat = false;
 		while (validFormat == false) {
-			System.out.println("Eneter the date of departure: (DD/MM/YYYY)");
+			System.out.println("Enter the date of departure: (DD/MM/YYYY)");
 			date = scan.next();
 			validFormat = isValidFormat("dd/MM/yyyy", date, Locale.ENGLISH);
 			if (validFormat == false)
@@ -139,7 +139,7 @@ public class Main {
 		}
 		String[] splitTime = time.split(":");
 		timee = LocalTime.of(Integer.parseInt(splitTime[0]), Integer.parseInt(splitTime[1]));
-
+		
 		airport.addFlight(new Flight(name, goingTo, comingFrom, timee, datee, terminal, flightId));
 
 	}

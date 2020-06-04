@@ -11,8 +11,6 @@ public class Flight {
 	private String goingTo;
 	private LocalTime time;
 	private LocalDate date;
-//	private LocalDate arrivalDate;
-//	private LocalTime departureTime;
 
 	public Flight(String airline, String comingFrom, String goingTo, LocalTime time, LocalDate date, int terminal,
 			String flightId) {
@@ -22,10 +20,7 @@ public class Flight {
 		this.comeingFrom = comingFrom;
 		this.goingTo = goingTo;
 		this.time = time;
-//		this.departureTime = departureTime;
 		this.date = date;
-//		this.arrivalDate = arrivalDate;
-
 	}
 
 	public Flight(Flight flight) {
@@ -34,8 +29,6 @@ public class Flight {
 		this.comeingFrom = flight.getArrivalName();
 		this.goingTo = flight.getDepartureName();
 		this.time = flight.getTime();
-//		this.departureTime = flight.getDepartureTime();
-//		this.arrivalDate = flight.getArrivalDate();
 		this.date = flight.getDate();
 		this.airline = flight.getAirline();
 	}
@@ -55,14 +48,6 @@ public class Flight {
 	public LocalTime getTime() {
 		return time;
 	}
-
-//	public LocalTime getDepartureTime() {
-//		return departureTime;
-//	}
-//	
-//	public LocalDate getArrivalDate() {
-//		return arrivalDate;
-//	}
 
 	public LocalDate getDate() {
 		return date;
@@ -95,9 +80,9 @@ public class Flight {
 
 	@Override
 	public String toString() {
-		return "Flight: " + flightId + ", Airline:" + this.airline + ", Departure : " + goingTo + ", Arrival: "
+		return "Flight: " + flightId + ", Airline:" + airline + ", Departure : " + goingTo + ", Arrival: "
 				+ comeingFrom + " , Date: " + date.getDayOfMonth() + "/" + date.getMonthValue() + "/" + date.getYear()
-				+ ", Time: " + time + "\n";
+				+ ", Time: " + time + ", Terminal: " + terminal + "\n";
 	}
 
 }
