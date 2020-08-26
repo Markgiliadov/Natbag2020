@@ -62,6 +62,7 @@ public class Main {
 		String name = "", goingTo = "", comingFrom = "", flightId = "";
 		LocalTime timee = null, arrivalTime = null;
 		LocalDate datee = null, arrivalDate = null;
+		String terminalInput;
 		int terminal = 0;
 		// Flight name
 		System.out.println("Please enter the airline's name: ");
@@ -80,7 +81,13 @@ public class Main {
 		boolean validTerminal = false;
 		while (validTerminal == false) {
 			System.out.println("What terminal is this flight on? ");
-			terminal = scan.nextInt();
+			terminalInput = scan.next();
+			  try { // making sure terminal is an integer
+			         terminal = Integer.parseInt(terminalInput);
+			    } catch (NumberFormatException nfe) {
+			        System.out.println("Please enter a number, not a string!");
+			        terminal = 0;
+			    }
 			if (terminal <= 0)
 				System.out.println("has to be bigger than 0.");
 			else
@@ -94,12 +101,26 @@ public class Main {
 			System.out.println("This flight departs from: ");
 			comingFrom = scan.next();
 			scan.nextLine();
+			while(comingFrom.charAt(0)<65 || comingFrom.charAt(0)>90) { // making sure syntax of country name is correct for departure
+				System.out.println("Departure country name must start with a capital letter!\nEnter and try again");
+				System.out.println("This flight departs from: ");
+				comingFrom = scan.next();
+				scan.nextLine();
+		}
 
 			// Arrival name compared to the Departure name
 			boolean validArrive = false;
 			while (validArrive == false) {
 				System.out.println("This flight arrives to: ");
 				goingTo = scan.next();
+				
+				while(goingTo.charAt(0)<65 || goingTo.charAt(0)>90) { // making sure syntax of country name is correct for arrival
+					System.out.println("Arrival country name must start with a capital letter!\nEnter and try again");
+					System.out.println("This flight arrives to: ");
+					goingTo = scan.next();
+					scan.nextLine();
+			}
+				
 				if (goingTo.equals(comingFrom))
 					System.out.println("Cannot arrive to a country you depart from. Try again");
 				else
@@ -206,17 +227,17 @@ public class Main {
 		LocalTime time2 = LocalTime.of(19, 02);
 		LocalTime time3 = LocalTime.of(20, 30);
 		LocalTime time4 = LocalTime.of(20, 20);
-		Flight f1 = new Flight("El-al", "New York", "Israel", time3, date1, 3, "LY365");
-		Flight f2 = new Flight("JesterAirLines", "Alaska", "Israel", time3, date3, 3, "IL231");
-		Flight f3 = new Flight("Transvania", "Jordan", "Israel", time4, date4, 3, "NY786");
-		Flight f4 = new Flight("StarAir", "Israel", "New York", time1, date2, 3, "SA154");
-		Flight f5 = new Flight("EL AL", "Israel", "Germany", time2, date5, 3, "FA194");
+//		Flight f1 = new Flight("El-al", "New York", "Israel", time3, date1, 3, "LY365");
+//		Flight f2 = new Flight("JesterAirLines", "Alaska", "Israel", time3, date3, 3, "IL231");
+//		Flight f3 = new Flight("Transvania", "Jordan", "Israel", time4, date4, 3, "NY786");
+//		Flight f4 = new Flight("StarAir", "Israel", "New York", time1, date2, 3, "SA154");
+//		Flight f5 = new Flight("EL AL", "Israel", "Germany", time2, date5, 3, "FA194");
 
-		airport.addFlight(f1);
-		airport.addFlight(f2);
-		airport.addFlight(f3);
-		airport.addFlight(f4);
-		airport.addFlight(f5);
+//		airport.addFlight(f1);
+//		airport.addFlight(f2);
+//		airport.addFlight(f3);
+//		airport.addFlight(f4);
+//		airport.addFlight(f5);
 
 		StringBuffer menu = new StringBuffer();
 		menu.append("\n1--- Add a new Flight \n");

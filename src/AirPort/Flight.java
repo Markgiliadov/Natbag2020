@@ -54,7 +54,7 @@ public class Flight {
 	}
 
 	public int getDepartureTerminal() {
-		return this.terminal;
+		return terminal;
 	}
 
 	public void setDepartureTerminal(int departureTerminal) {
@@ -62,14 +62,20 @@ public class Flight {
 	}
 
 	public String getAirline() {
-		return this.airline;
+		return airline;
 	}
 
-	public boolean equals(Object other) {
+	public boolean equals(Object other) {// fixing equals, inside Departures, can't be same flight with same id and airline name. Same for Arrivals
 		if (!(other instanceof Flight))
 			return false;
+		else {
 		Flight temp = (Flight) other;
-		return flightId == temp.getFlightId() && airline.equals(temp.getAirline());
+		boolean check = false;
+				if(flightId.equals(temp.getFlightId()) && airline.equals(temp.getAirline()))
+					check = true;
+		System.out.println("is true? " +check+" , tempflightId:"+temp.getFlightId()+"this flight id "+flightId +"TempAirline " +temp.getAirline()+" this flight Airline "+airline+"\nequal factor "+flightId.equals(temp.getFlightId())+"\n"+(airline.equals(temp.getAirline())));
+		return check;
+		}
 	}
 
 	public String save() {

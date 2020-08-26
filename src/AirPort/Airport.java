@@ -44,11 +44,12 @@ public class Airport {
 	
 	public void addFlight(Flight flight) {
 		boolean ifDepExists = false;
+		System.out.println(flight);
 		if (flight.getDepartureName().equals("Israel")) {
 			for( Flight departure : departures)
 				if(departure.equals(flight))
 					ifDepExists=true;
-		if(ifDepExists) {
+		if(!ifDepExists) {
 			getDeparture().add(flight);
 			System.out.println("Successfuly Added!");
 		}
@@ -60,7 +61,7 @@ public class Airport {
 				for( Flight arrival : arrivals)
 					if(arrival.equals(flight))
 						ifAriExists=true;
-			if(ifAriExists) {
+			if(!ifAriExists) {
 				getArrival().add(flight);
 				System.out.println("Successfuly Added!");
 			}
