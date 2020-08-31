@@ -1,9 +1,14 @@
 package AirPort;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Flight {
+public class Flight implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String airline;
 	private int terminal;
 	private String flightId;
@@ -11,6 +16,7 @@ public class Flight {
 	private String goingTo;
 	private LocalTime time;
 	private LocalDate date;
+	private String dayOfTheWeek;
 
 	public Flight(String airline, String comingFrom, String goingTo, LocalTime time, LocalDate date, int terminal,
 			String flightId) {
@@ -21,6 +27,7 @@ public class Flight {
 		this.goingTo = goingTo;
 		this.time = time;
 		this.date = date;
+		this.dayOfTheWeek = date.getDayOfWeek().toString();
 	}
 
 	public Flight(Flight flight) {
@@ -31,6 +38,7 @@ public class Flight {
 		this.time = flight.getTime();
 		this.date = flight.getDate();
 		this.airline = flight.getAirline();
+		this.dayOfTheWeek = flight.getDate().getDayOfWeek().toString();
 	}
 
 	public String getFlightId() {
@@ -53,6 +61,9 @@ public class Flight {
 		return date;
 	}
 
+	public String getDayOfTheWeek() {
+		return dayOfTheWeek;
+	}
 	public int getDepartureTerminal() {
 		return terminal;
 	}
@@ -73,7 +84,7 @@ public class Flight {
 		boolean check = false;
 				if(flightId.equals(temp.getFlightId()) && airline.equals(temp.getAirline()))
 					check = true;
-		System.out.println("is true? " +check+" , tempflightId:"+temp.getFlightId()+"this flight id "+flightId +"TempAirline " +temp.getAirline()+" this flight Airline "+airline+"\nequal factor "+flightId.equals(temp.getFlightId())+"\n"+(airline.equals(temp.getAirline())));
+		System.out.println("is true? " +check);
 		return check;
 		}
 	}
@@ -87,7 +98,7 @@ public class Flight {
 	@Override
 	public String toString() {
 		return "Flight: " + flightId + ", Airline:" + airline + ", Departure : " + goingTo + ", Arrival: "
-				+ comeingFrom + " , Date: " + date.getDayOfMonth() + "/" + date.getMonthValue() + "/" + date.getYear()
+				+ comeingFrom + " , Date: " + date.getDayOfMonth() + "/" + date.getMonthValue() + "/" + date.getYear() + " On "+dayOfTheWeek
 				+ ", Time: " + time + ", Terminal: " + terminal + "\n";
 	}
 

@@ -82,12 +82,12 @@ public class Main {
 		while (validTerminal == false) {
 			System.out.println("What terminal is this flight on? ");
 			terminalInput = scan.next();
-			  try { // making sure terminal is an integer
-			         terminal = Integer.parseInt(terminalInput);
-			    } catch (NumberFormatException nfe) {
-			        System.out.println("Please enter a number, not a string!");
-			        terminal = 0;
-			    }
+			try { // making sure terminal is an integer
+				terminal = Integer.parseInt(terminalInput);
+			} catch (NumberFormatException nfe) {
+				System.out.println("Please enter a number, not a string!");
+				terminal = 0;
+			}
 			if (terminal <= 0)
 				System.out.println("has to be bigger than 0.");
 			else
@@ -101,26 +101,28 @@ public class Main {
 			System.out.println("This flight departs from: ");
 			comingFrom = scan.next();
 			scan.nextLine();
-			while(comingFrom.charAt(0)<65 || comingFrom.charAt(0)>90) { // making sure syntax of country name is correct for departure
+			while (comingFrom.charAt(0) < 65 || comingFrom.charAt(0) > 90) { // making sure syntax of country name is
+																				// correct for departure
 				System.out.println("Departure country name must start with a capital letter!\nEnter and try again");
 				System.out.println("This flight departs from: ");
 				comingFrom = scan.next();
 				scan.nextLine();
-		}
+			}
 
 			// Arrival name compared to the Departure name
 			boolean validArrive = false;
 			while (validArrive == false) {
 				System.out.println("This flight arrives to: ");
 				goingTo = scan.next();
-				
-				while(goingTo.charAt(0)<65 || goingTo.charAt(0)>90) { // making sure syntax of country name is correct for arrival
+
+				while (goingTo.charAt(0) < 65 || goingTo.charAt(0) > 90) { // making sure syntax of country name is
+																			// correct for arrival
 					System.out.println("Arrival country name must start with a capital letter!\nEnter and try again");
 					System.out.println("This flight arrives to: ");
 					goingTo = scan.next();
 					scan.nextLine();
-			}
-				
+				}
+
 				if (goingTo.equals(comingFrom))
 					System.out.println("Cannot arrive to a country you depart from. Try again");
 				else
@@ -160,7 +162,7 @@ public class Main {
 		}
 		String[] splitTime = time.split(":");
 		timee = LocalTime.of(Integer.parseInt(splitTime[0]), Integer.parseInt(splitTime[1]));
-		
+
 		airport.addFlight(new Flight(name, goingTo, comingFrom, timee, datee, terminal, flightId));
 
 	}
@@ -246,13 +248,17 @@ public class Main {
 		menu.append("4--- Show all Flights\n");
 		menu.append("5--- Search Arrivals within dates\n");
 		menu.append("6--- Search Departures within dates\n");
-		menu.append("7--- Load from file\n");
-		menu.append("8--- Save to file\n");
+		menu.append("7--- Search flights by Airline\n");
+		menu.append("8--- Search flights by City\n");
+		menu.append("9--- Sort flights by Day of the Week\n");
+		menu.append("10--- Load from file\n");
+		menu.append("11--- Save to file\n");
+		menu.append("12--- Sort flights by Date and Time\n");
 
 		System.out.println("Welcome to Ben Gurion Airport!");
 		int select = 0;
 		ArrayList<Flight> results;
-		while (select != 9) {
+		while (select != 13) {
 			System.out.println(menu.toString());
 			select = scan.nextInt();
 			switch (select) {
@@ -266,7 +272,9 @@ public class Main {
 				System.out.println("\n---Arrivals---\n" + airport.getArrival().toString());
 				break;
 			case 4:
-				System.out.println(airport.toString());
+				System.out.println(
+						airport.toString() + " day : " + airport.getDeparture().get(0).getDate().getDayOfWeek());
+
 				break;
 			case 5:
 				results = searchByDate(airport, 1);
@@ -278,11 +286,34 @@ public class Main {
 				for (Flight flight : results)
 					System.out.println(flight.toString());
 				break;
-			case 7:
-				airport.load();
+			case 7: {
+				System.out.println("Enter Airline name: ");
+				for (Flight flight : airport.searchFlightsByAirline(scan.next()))
+					System.out.println(flight.toString());
+			}
 				break;
 			case 8:
-				airport.save();
+				System.out.println("Enter City name: ");
+				for (Flight flight : airport.searchFlightsByCity(scan.next()))
+					System.out.println(flight.toString());		
+				break;
+			case 9: {
+				System.out.println("Enter a day of the week: ");
+				for (Flight flight : airport.searchFlightsByDayOfTheWeek(scan.next()))
+					System.out.println(flight.toString());
+			}
+				break;
+			case 10:
+				airport.loadFlightsFromFile();
+				break;
+			case 11:
+				airport.saveFlightsToFile();
+				break;
+			case 12: {
+				airport.sortByDateAndTime();
+				System.out.println("\n---Departures---\n" + airport.getDeparture().toString());
+				System.out.println("\n---Arrivals---\n" + airport.getArrival().toString());
+			}
 				break;
 
 			default:

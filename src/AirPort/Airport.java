@@ -1,18 +1,30 @@
 package AirPort;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Scanner;
 
-public class Airport {
+public class Airport extends LinkedList<Flight> implements Iterable<Flight> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Flight> arrivals;
 	private ArrayList<Flight> departures;
 	private String airportName;
@@ -32,7 +44,7 @@ public class Airport {
 		return this.arrivals;
 	}
 
-	public Flight getFlightById(ArrayList<Flight> src,String id) {
+	public Flight getFlightById(ArrayList<Flight> src, String id) {
 		for (Flight flight : src) {
 			if (flight instanceof Flight) {
 				if (flight.getFlightId().equals(id))
@@ -41,33 +53,110 @@ public class Airport {
 		}
 		return null; // no such flight
 	}
-	
+
+	public void sortByDateAndTime() {
+		this.departures.sort(new CompareFlightByDate());
+		this.arrivals.sort(new CompareFlightByDate());
+	}
+
 	public void addFlight(Flight flight) {
 		boolean ifDepExists = false;
 		System.out.println(flight);
 		if (flight.getDepartureName().equals("Israel")) {
-			for( Flight departure : departures)
-				if(departure.equals(flight))
-					ifDepExists=true;
-		if(!ifDepExists) {
-			getDeparture().add(flight);
-			System.out.println("Successfuly Added!");
-		}
-		else
-			System.out.println("The flight is already logged in the system, try again!");
-		}
-		else {
+			for (Flight departure : departures)
+				if (departure.equals(flight))
+					ifDepExists = true;
+			if (!ifDepExists) {
+				getDeparture().add(flight);
+				System.out.println("Successfuly Added!");
+			} else
+				System.out.println("The flight is already logged in the system, try again!");
+		} else {
 			boolean ifAriExists = false;
-				for( Flight arrival : arrivals)
-					if(arrival.equals(flight))
-						ifAriExists=true;
-			if(!ifAriExists) {
+			for (Flight arrival : arrivals)
+				if (arrival.equals(flight))
+					ifAriExists = true;
+			if (!ifAriExists) {
 				getArrival().add(flight);
 				System.out.println("Successfuly Added!");
-			}
-			else
+			} else
 				System.out.println("The flight is already logged in the system, try again!");
 		}
+	}
+
+	public ArrayList<Flight> searchFlightsByAirline(String airline) {
+		ArrayList<Flight> myFlights = new ArrayList<>();
+		for (Flight flight : arrivals) {
+			if (flight.getAirline().equals(airline)) {
+				myFlights.add(flight);
+			}
+
+		}
+		for (Flight flight : departures) {
+			if (flight.getAirline().equals(airline)) {
+				myFlights.add(flight);
+			}
+		}
+		return myFlights;
+	}
+
+	public ArrayList<Flight> searchFlightsByCity(String city) {
+		ArrayList<Flight> myFlights = new ArrayList<>();
+		for (Flight flight : arrivals) {
+			if (flight.getDepartureName().equals(city) || flight.getArrivalName().equals(city))
+				myFlights.add(flight);
+		}
+		for (Flight flight : departures) {
+			if (flight.getDepartureName().equals(city) || flight.getDepartureName().equals(city))
+				myFlights.add(flight);
+		}
+		return myFlights;
+	}
+
+	public ArrayList<Flight> searchFlightsByDayOfTheWeek(String chosenDay) {
+
+		switch (chosenDay) {
+		case "SUNDAY":
+			return searchChosenDay("SUNDAY");
+
+		case "MONDAY":
+			return searchChosenDay("MONDAY");
+
+		case "TUESDAY":
+			return searchChosenDay("TUESDAY");
+
+		case "WEDNSDAY":
+			return searchChosenDay("WEDNSDAY");
+
+		case "THURSDAY":
+			return searchChosenDay("THURSDAY");
+
+		case "FRIDAY":
+			return searchChosenDay("FRIDAY");
+
+		case "SATURDAY":
+			return searchChosenDay("SATURDAY");
+
+		default: {
+			System.out.println("ERROR DAY INPUT!");
+			return arrivals;
+
+		}
+		}
+
+	}
+
+	private ArrayList<Flight> searchChosenDay(String theDay) {
+		ArrayList<Flight> filteredFlights = new ArrayList<>();
+		for (Flight flight : arrivals) {
+			if (flight.getDate().getDayOfWeek().toString().equals(theDay))
+				filteredFlights.add(flight);
+		}
+		for (Flight flight : departures) {
+			if (flight.getDate().getDayOfWeek().toString().equals(theDay))
+				filteredFlights.add(flight);
+		}
+		return filteredFlights;
 	}
 
 	public ArrayList<Flight> searchArrivalsByDate(ArrayList<Flight> arrivals, LocalDate lowDate, LocalDate highDate) {
@@ -90,91 +179,71 @@ public class Airport {
 		return results;
 	}
 
-	public void save() throws FileNotFoundException {
-		try{
-			File file = new File("dataBase.txt");
-			PrintWriter pw = new PrintWriter(file);
-			pw.println("Arrivals");
-			for (Flight flight : arrivals) {
-				pw.print(flight.save());
-			}
-			pw.println("Departures");
-			for (Flight flight : departures) {
-				pw.print(flight.save());
-			}
-			pw.close();
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
+	public void saveFlightsToFile() {
+		try (ObjectOutputStream oOut = new ObjectOutputStream(
+				new BufferedOutputStream(new FileOutputStream("Flights.obj")))) {
+			oOut.writeInt(this.arrivals.size()); // writing size of arrivals first, than departures, than all arrivals,
+													// than all departures
+			oOut.writeInt(this.departures.size());
+
+			for (int i = 0; i < this.arrivals.size(); i++)
+				oOut.writeObject(this.arrivals.get(i));
+			for (int i = 0; i < this.departures.size(); i++)
+				oOut.writeObject(this.departures.get(i));
+			System.out.println(this.arrivals.size() + this.departures.size() + " Flights Saved!\n");
+		} catch (FileNotFoundException e) {
+			System.out.println("Save Exception: File Contacts.obj Not Found!");
+		} catch (IOException e) {
+			System.out.println("Save Exception: " + e.getMessage());
 		}
 	}
 
-	public void loadArrivals(Scanner scan) {
-		try {
-		while (!scan.nextLine().toString().contentEquals("Departures")) {
-			String[] flightData = scan.next().split("::");
-			String[] date = flightData[4].split("-");
-			String[] time = flightData[5].split(":");
-			arrivals.add(new Flight(flightData[1], flightData[3], flightData[2],
-					LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1])),
-					LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])),
-					Integer.parseInt(flightData[6]), flightData[0]));
-			
-		}
-		} catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-	}
-	public void loadDepartures(Scanner scan) {
-		while (scan.hasNext()) {
-			String[] flightData = scan.next().split("::");
-			String[] date = flightData[4].split("-");
-			String[] time = flightData[5].split(":");
-			addFlight(new Flight(flightData[1], flightData[3], flightData[2],
-					LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1])),
-					LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])),
-					Integer.parseInt(flightData[6]), flightData[0]));
-		}
-	}
+	public void loadFlightsFromFile() {
+		try (ObjectInputStream oIn = new ObjectInputStream(
+				new BufferedInputStream(new FileInputStream("Flights.obj")))) {
+			int countArrival = oIn.readInt(), countDeparture = oIn.readInt(), added = 0, updated = 0;
 
-	public void load() throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("dataBaseTest.txt"));
-		String title = br.readLine();
-		try {
-		while (title.compareTo("Departures")!=0) {
-			title = br.readLine();
-			String[] flightData = title.split("::");
-			String[] date = flightData[4].split("-");
-			String[] time = flightData[5].split(":");
-			arrivals.add(new Flight(flightData[1], flightData[3], flightData[2],
-					LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1])),
-					LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])),
-					Integer.parseInt(flightData[6]), flightData[0]));
+			for (int i = 0; i < countArrival; i++) {
+				Flight tempFlight = (Flight) oIn.readObject();
+				for (int j = 0; j < this.arrivals.size(); j++) {
+					if (tempFlight.equals(this.arrivals.get(j))) {
+						updated++;
+						this.arrivals.remove(j);
+					} else
+						added++;
+				}
+				this.arrivals.add(tempFlight);
+			}
+			for (int i = 0; i < countDeparture; i++) {
+				Flight tempFlight = (Flight) oIn.readObject();
+				for (int j = 0; j < this.departures.size(); j++) {
+					if (tempFlight.equals(this.departures.get(j))) {
+						updated++;
+						this.departures.remove(j);
+					} else
+						added++;
+				}
+				this.departures.add(tempFlight);
+
+			}
+
+			if (added + updated > 0)
+				System.out.printf("%d Flights Loaded! Added: %d Updated: %d\n", (added + updated), added, updated);
+			else
+				System.out.println("File Is Empty!");
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Load Exception: File Flights.obj Not Found!");
+		} catch (IOException e) {
+			System.out.println("Load Exception: " + e.getMessage());
+		} catch (ClassNotFoundException e) {
+			System.out.println("Load Exception: File Flights.obj Not Contains Flights Data!");
 		}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-			
-		}
-		try {
-		while (title!=null) {
-			title = br.readLine();
-			String[] flightData = title.split("::");
-			String[] date = flightData[4].split("-");
-			String[] time = flightData[5].split(":");
-			departures.add(new Flight(flightData[1], flightData[3], flightData[2],
-					LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1])),
-					LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])),
-					Integer.parseInt(flightData[6]), flightData[0]));
-		}
-		}
-		catch (NullPointerException e) {
-			
-		}
-		
 	}
 
 	@Override
 	public String toString() {
+
 		return "Airport:\n" + airportName + "\n----Departures----\n" + departures.toString() + "\n----Arrivals----\n"
 				+ arrivals.toString();
 	}
